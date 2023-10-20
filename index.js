@@ -1,16 +1,9 @@
-const { app, BrowserWindow, Menu, MenuItem } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem, clipboard, nativeImage } = require('electron')
 const fs = require('fs');
 const path = require('path');
+const request = require('request').defaults({ encoding: null });  // Importa request con la opción de encoding en null
 
 const startURL = 'https://chat.openai.com/'
-
-const contextMenu = new Menu();
-
-contextMenu.append(new MenuItem({ label: 'Copiar', role: 'copy' }));
-contextMenu.append(new MenuItem({ label: 'Cortar', role: 'cut' }));
-contextMenu.append(new MenuItem({ label: 'Pegar', role: 'paste' }));
-contextMenu.append(new MenuItem({ type: 'separator' }));
-contextMenu.append(new MenuItem({ label: 'Seleccionar todo', role: 'selectall' }));
 
 app.on('ready', () => {
     const win = new BrowserWindow({
@@ -36,6 +29,29 @@ app.on('ready', () => {
     
     win.setMenu(null);
     win.webContents.on('context-menu', (e, params) => {
+        const contextMenu = new Menu();
+        if (params.mediaType === 'image') {
+            contextMenu.append(new MenuItem({
+                label: 'Copy image',
+                click: () => {
+                    request.get(params.srcURL, (error, response, body) => {
+                        if (error) {
+                            console.error('Error obtaining the image:', error);
+                            return;
+                        }
+                        
+                        const image = nativeImage.createFromBuffer(body);
+                        clipboard.writeImage(image);
+                    });
+                }
+            }));
+        }else{
+            contextMenu.append(new MenuItem({ label: 'Copy', role: 'copy' }));
+            contextMenu.append(new MenuItem({ label: 'Cut', role: 'cut' }));
+            contextMenu.append(new MenuItem({ label: 'Paste', role: 'paste' }));
+            contextMenu.append(new MenuItem({ type: 'separator' }));
+            contextMenu.append(new MenuItem({ label: 'Select all', role: 'selectall' }));
+        }
         contextMenu.popup(win, params.x, params.y);
       });
     win.loadURL(startURL)
