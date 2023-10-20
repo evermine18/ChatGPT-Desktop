@@ -1,9 +1,16 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem } = require('electron')
 const fs = require('fs');
 const path = require('path');
 
 const startURL = 'https://chat.openai.com/'
 
+const contextMenu = new Menu();
+
+contextMenu.append(new MenuItem({ label: 'Copiar', role: 'copy' }));
+contextMenu.append(new MenuItem({ label: 'Cortar', role: 'cut' }));
+contextMenu.append(new MenuItem({ label: 'Pegar', role: 'paste' }));
+contextMenu.append(new MenuItem({ type: 'separator' }));
+contextMenu.append(new MenuItem({ label: 'Seleccionar todo', role: 'selectall' }));
 
 app.on('ready', () => {
     const win = new BrowserWindow({
@@ -28,6 +35,9 @@ app.on('ready', () => {
     });
     
     win.setMenu(null);
+    win.webContents.on('context-menu', (e, params) => {
+        contextMenu.popup(win, params.x, params.y);
+      });
     win.loadURL(startURL)
 });
 
