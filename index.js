@@ -1,7 +1,7 @@
-const { app, BrowserWindow, Menu, MenuItem, clipboard, nativeImage } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem, clipboard, nativeImage, ipcMain } = require('electron')
 const fs = require('fs');
 const path = require('path');
-const request = require('request').defaults({ encoding: null });  // Importa request con la opción de encoding en null
+const request = require('request').defaults({ encoding: null });  
 
 const startURL = 'https://chat.openai.com/'
 
@@ -9,12 +9,35 @@ app.on('ready', () => {
     const win = new BrowserWindow({
         width: 1000,
         height: 800,
-        icon: path.join(__dirname, 'icon.ico')
+        frame: false,
+        icon: path.join(__dirname, 'icon.ico'),
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            partition: 'persist:myPartition',
+            webviewTag: true 
+          }
     });
 
-    // Asumiendo que el script de contenido de la extensión se llama "contentScript.js"
     const EXTENSION_PATH = path.join(__dirname,'content.js');
     const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
+
+    ipcMain.on('minimize-window', () => {
+        win.minimize();
+      });
+    
+    ipcMain.on('maximize-window', () => {
+    if (win.isMaximized()) {
+        win.unmaximize();
+    } else {
+        win.maximize();
+    }
+    });
+    //win.webContents.openDevTools();
+
+    ipcMain.on('close-window', () => {
+    win.close();
+    });
 
     win.webContents.on('did-finish-load', () => {
         // Checking if the user are in ChatGPT app page
@@ -54,7 +77,8 @@ app.on('ready', () => {
         }
         contextMenu.popup(win, params.x, params.y);
       });
-    win.loadURL(startURL)
+    //win.loadURL(startURL)
+    win.loadFile('index.html');
 });
 
 
