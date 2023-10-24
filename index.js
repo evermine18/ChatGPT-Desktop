@@ -49,9 +49,18 @@ app.on('ready', () => {
             },5000);
         }   
     });
+
+    ipcMain.on('load-extension', () => {
+
+        const EXTENSION_PATH = path.join(__dirname, 'content.js');
+        const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
+        setTimeout(() => {
+            win.webContents.send('execute-script-in-webview', extensionScript);
+        }, 5000);
+    });
     
     win.setMenu(null);
-    win.webContents.on('context-menu', (e, params) => {
+    ipcMain.on('context-menu', (e, params) => {
         const contextMenu = new Menu();
         if (params.mediaType === 'image') {
             contextMenu.append(new MenuItem({
