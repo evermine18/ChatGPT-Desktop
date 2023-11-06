@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-client",
-  "version": "1.1.0-Pre1",
+  "version": "1.1.0-Pre2",
   "description": "",
   "main": "index.js",
   "scripts": {
