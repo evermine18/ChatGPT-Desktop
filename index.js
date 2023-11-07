@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu, MenuItem, clipboard, nativeImage, ipcMain } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem, clipboard,
+     nativeImage, ipcMain, dialog, shell } = require('electron')
 const fs = require('fs');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
@@ -33,6 +34,26 @@ app.on('ready', () => {
         win.maximize();
     }
     });
+    ipcMain.on('relaunch-app', () => {
+        app.relaunch();
+        app.exit(0);
+    });
+    ipcMain.on('about-dialog', () => {
+        const options = {
+            type: 'info',
+            title: 'About ChatGPT - Client',
+            message: 'ChatGPT Desktop client.',
+            detail: 'An enhanced unofficial desktop client for ChatGPT, made with Electron, featuring a sleek and simplistic design.\n\nMade by: @evermine18',
+            buttons: ['Visit Repo', 'Check Projects', 'OK']
+        };
+        dialog.showMessageBox(null, options).then((response) => {
+            if (response.response === 0) { // 'Visit Repo' was clicked
+                shell.openExternal('https://github.com/evermine18/ChatGPT-Desktop');
+            } else if (response.response === 1) { // 'Check Projects' was clicked
+                shell.openExternal('https://github.com/evermine18');
+            }
+        });
+    })
     //win.webContents.openDevTools();
 
     ipcMain.on('close-window', () => {
@@ -49,6 +70,8 @@ app.on('ready', () => {
             },5000);
         }   
     });
+    /*
+    Temporary disabled due no more cap for GPT-4
 
     ipcMain.on('load-extension', () => {
 
@@ -58,7 +81,7 @@ app.on('ready', () => {
             win.webContents.send('execute-script-in-webview', extensionScript);
         }, 5000);
     });
-    
+    */
     win.setMenu(null);
     ipcMain.on('context-menu', (e, params) => {
         const contextMenu = new Menu();

@@ -13,6 +13,14 @@ document.getElementById('maximize').addEventListener('click', () => {
 document.getElementById('close').addEventListener('click', () => {
   ipcRenderer.send('close-window');
 });
+
+document.getElementById('fix-gpt4').addEventListener('click', () => {
+  ipcRenderer.send('relaunch-app');
+})
+
+document.getElementById('about').addEventListener('click', () => {
+  ipcRenderer.send('about-dialog');
+})
 const webview = document.querySelector('webview');
 
 webview.addEventListener('context-menu', (e) => {
