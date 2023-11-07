@@ -1,7 +1,8 @@
-const { app, BrowserWindow, Menu, MenuItem, clipboard, nativeImage } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem, clipboard,
+     nativeImage, ipcMain, dialog, shell } = require('electron')
 const fs = require('fs');
 const path = require('path');
-const request = require('request').defaults({ encoding: null });  // Importa request con la opción de encoding en null
+const request = require('request').defaults({ encoding: null });  
 
 const startURL = 'https://chat.openai.com/'
 
@@ -9,12 +10,55 @@ app.on('ready', () => {
     const win = new BrowserWindow({
         width: 1000,
         height: 800,
-        icon: path.join(__dirname, 'icon.ico')
+        frame: false,
+        icon: path.join(__dirname, 'icon.ico'),
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            partition: 'persist:myPartition',
+            webviewTag: true 
+          }
     });
 
-    // Asumiendo que el script de contenido de la extensión se llama "contentScript.js"
     const EXTENSION_PATH = path.join(__dirname,'content.js');
     const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
+
+    ipcMain.on('minimize-window', () => {
+        win.minimize();
+      });
+    
+    ipcMain.on('maximize-window', () => {
+    if (win.isMaximized()) {
+        win.unmaximize();
+    } else {
+        win.maximize();
+    }
+    });
+    ipcMain.on('relaunch-app', () => {
+        app.relaunch();
+        app.exit(0);
+    });
+    ipcMain.on('about-dialog', () => {
+        const options = {
+            type: 'info',
+            title: 'About ChatGPT - Client',
+            message: 'ChatGPT Desktop client.',
+            detail: 'An enhanced unofficial desktop client for ChatGPT, made with Electron, featuring a sleek and simplistic design.\n\nMade by: @evermine18',
+            buttons: ['Visit Repo', 'Check Projects', 'OK']
+        };
+        dialog.showMessageBox(null, options).then((response) => {
+            if (response.response === 0) { // 'Visit Repo' was clicked
+                shell.openExternal('https://github.com/evermine18/ChatGPT-Desktop');
+            } else if (response.response === 1) { // 'Check Projects' was clicked
+                shell.openExternal('https://github.com/evermine18');
+            }
+        });
+    })
+    //win.webContents.openDevTools();
+
+    ipcMain.on('close-window', () => {
+    win.close();
+    });
 
     win.webContents.on('did-finish-load', () => {
         // Checking if the user are in ChatGPT app page
@@ -26,9 +70,20 @@ app.on('ready', () => {
             },5000);
         }   
     });
-    
+    /*
+    Temporary disabled due no more cap for GPT-4
+
+    ipcMain.on('load-extension', () => {
+
+        const EXTENSION_PATH = path.join(__dirname, 'content.js');
+        const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
+        setTimeout(() => {
+            win.webContents.send('execute-script-in-webview', extensionScript);
+        }, 5000);
+    });
+    */
     win.setMenu(null);
-    win.webContents.on('context-menu', (e, params) => {
+    ipcMain.on('context-menu', (e, params) => {
         const contextMenu = new Menu();
         if (params.mediaType === 'image') {
             contextMenu.append(new MenuItem({
@@ -54,7 +109,8 @@ app.on('ready', () => {
         }
         contextMenu.popup(win, params.x, params.y);
       });
-    win.loadURL(startURL)
+    //win.loadURL(startURL)
+    win.loadFile('index.html');
 });
 
 

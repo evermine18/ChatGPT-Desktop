@@ -1,0 +1,141 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+.wc-box {
+    position: fixed;
+    top: 0;
+    background-color: #FFFFFF;
+    right: 0;
+  }
+  
+  .wc-box div {
+    position: relative;
+    float: left;
+    width: 30px;
+    height: 30px;
+  }
+  
+  .wc-box div:before,
+  .wc-box div:after {
+    top: 30%;
+    right: 30%;
+    bottom: 30%;
+    left: 30%;
+    content: " ";
+    position: absolute;
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 0 0 2px 0;
+  }
+  
+  .wc-box .minimize:before {
+    border-bottom-width: 2px;
+  }
+  
+  .wc-box .maximize:before {
+    border-width: 1px 1px 2px 1px;
+  }
+  
+  .wc-box .close:before,
+  .wc-box .close:after {
+    bottom: 50%;
+    top: 50%;
+  }
+  
+  .wc-box .close:before {
+    transform: rotate(45deg);
+  }
+  
+  .wc-box .close:after {
+    transform: rotate(-45deg);
+  }
+  
+  .wc-box div:hover {
+    background-color: #CCCCCC;
+  }
+  
+  .wc-box .close:hover {
+    background-color: #E04343;
+  }
+  
+  .wc-box div:hover:after,
+  .wc-box div:hover:before {
+    border-color: #333333;
+  }
+  
+  .wc-box .close:hover:after,
+  .wc-box .close:hover:before {
+    border-color: #FFFFFF;
+  }
+  /* width */
+::-webkit-scrollbar {
+    margin-top: 10px;
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+/* Style The Dropdown Button */
+.dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
