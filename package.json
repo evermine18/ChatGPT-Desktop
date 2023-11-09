@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-client",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A Desktop client made with electron for ChatGPT",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,9 @@
   "build": {
     "appId": "com.evermine.chatgptclient",
     "productName": "ChatGPT - Client",
+    "publish": {
+      "provider": "github"
+    },
     "directories": {
       "output": "dist"
     },
@@ -31,6 +34,8 @@
     "electron-builder": "^24.6.4"
   },
   "dependencies": {
+    "electron-log": "^5.0.0",
+    "electron-updater": "^6.1.4",
     "request": "^2.88.2"
   }
 }

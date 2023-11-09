@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, MenuItem, clipboard,
      nativeImage, ipcMain, dialog, shell } = require('electron')
+const { autoUpdater } = require('electron-updater');
 const fs = require('fs');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
@@ -43,7 +44,7 @@ app.on('ready', () => {
             type: 'info',
             title: 'About ChatGPT - Client',
             message: 'ChatGPT Desktop client.',
-            detail: 'An enhanced unofficial desktop client for ChatGPT, made with Electron, featuring a sleek and simplistic design.\n\nMade by: @evermine18',
+            detail: 'An enhanced unofficial desktop client for ChatGPT, made with Electron, featuring a sleek and simplistic design.\n\nMade by: @evermine18\n\nVersion: '+app.getVersion(),
             buttons: ['Visit Repo', 'Check Projects', 'OK']
         };
         dialog.showMessageBox(null, options).then((response) => {
@@ -60,6 +61,28 @@ app.on('ready', () => {
     win.close();
     });
 
+    autoUpdater.on('error', (error) => {
+    dialog.showMessageBox({
+        type: 'error',
+        title: 'Error',
+        message: 'Update Error: '+error.stack,
+        buttons: ['OK']
+    })
+    });
+    autoUpdater.on('update-downloaded', () => {
+        dialog.showMessageBox({
+          type: 'info',
+          title: 'New version available',
+          message: 'A new version has been downloaded. Do you want to install it now?\n\nNote: The app will be updated on the next launch if you choose not to update now.',
+          buttons: ['YES', 'NO']
+        }).then(result => {
+          if (result.response === 0) {
+            autoUpdater.quitAndInstall();
+          }
+        });
+    });
+
+      autoUpdater.checkForUpdates()
     win.webContents.on('did-finish-load', () => {
         // Checking if the user are in ChatGPT app page
         const currentURL = win.webContents.getURL();
