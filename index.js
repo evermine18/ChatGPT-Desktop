@@ -12,7 +12,7 @@ app.on('ready', () => {
         width: 1000,
         height: 800,
         frame: false,
-        icon: path.join(__dirname, 'icon.ico'),
+        icon: path.join(__dirname, 'icon.png'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
