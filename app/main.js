@@ -39,8 +39,11 @@ webview.addEventListener('did-finish-load', () => {
       ipcRenderer.send('load-extension');
   }
 });
-
+// 
+/*
+Disabled due a no more cap for GPT-4
 ipcRenderer.on('execute-script-in-webview', (event, script) => {
   const webview = document.querySelector('webview');
   webview.executeJavaScript(script);
 });
+*/

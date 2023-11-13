@@ -4,9 +4,10 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
 
-const startURL = 'https://chat.openai.com/'
+app.setName('ChatGPT - Client')
 
 app.on('ready', () => {
+    // Initializing window
     const win = new BrowserWindow({
         width: 1000,
         height: 800,
@@ -19,7 +20,10 @@ app.on('ready', () => {
             webviewTag: true 
           }
     });
-
+    // Top bar frame events
+    ipcMain.on('close-window', () => {
+        win.close();
+    });
 
     ipcMain.on('minimize-window', () => {
         win.minimize();
@@ -32,10 +36,12 @@ app.on('ready', () => {
         win.maximize();
     }
     });
+    // Logo contextual menu events
     ipcMain.on('relaunch-app', () => {
         app.relaunch();
         app.exit(0);
     });
+
     ipcMain.on('about-dialog', () => {
         const options = {
             type: 'info',
@@ -51,21 +57,17 @@ app.on('ready', () => {
                 shell.openExternal('https://github.com/evermine18');
             }
         });
-    })
-    //win.webContents.openDevTools();
-
-    ipcMain.on('close-window', () => {
-        win.close();
-    });
-
+    })    
+    // Error updater handling
     autoUpdater.on('error', (error) => {
-    dialog.showMessageBox({
-        type: 'error',
-        title: 'Error',
-        message: 'Update Error: '+error.stack,
-        buttons: ['OK']
-    })
+        dialog.showMessageBox({
+            type: 'error',
+            title: 'Error',
+            message: 'Update Error: '+error.stack,
+            buttons: ['OK']
+        })
     });
+    // New version available handling
     autoUpdater.on('update-downloaded', () => {
         dialog.showMessageBox({
           type: 'info',
@@ -79,7 +81,11 @@ app.on('ready', () => {
         });
     });
 
-      autoUpdater.checkForUpdates()
+    autoUpdater.checkForUpdates()
+    
+    /*
+    Temporary disabled due no more cap for GPT-4
+
     win.webContents.on('did-finish-load', () => {
         // Checking if the user are in ChatGPT app page
         const currentURL = win.webContents.getURL();
@@ -90,8 +96,6 @@ app.on('ready', () => {
             },5000);
         }   
     });
-    /*
-    Temporary disabled due no more cap for GPT-4
 
     ipcMain.on('load-extension', () => {
 
@@ -102,7 +106,10 @@ app.on('ready', () => {
         }, 5000);
     });
     */
-    win.setMenu(null);
+
+    win.setMenu(null); // Disabling default menu
+
+    // Context menu events
     ipcMain.on('context-menu', (e, params) => {
         const contextMenu = new Menu();
         if (params.mediaType === 'image') {
@@ -133,8 +140,7 @@ app.on('ready', () => {
     win.loadFile('app/index.html');
 });
 
-
+// Quit when all windows are closed.
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
-app.setName('ChatGPT - Client')
