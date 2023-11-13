@@ -11,6 +11,11 @@
   "build": {
     "appId": "com.evermine.chatgptclient",
     "productName": "ChatGPT - Client",
+    "files": [
+      "index.js",
+      "app",
+      "icon.png"
+    ],
     "publish": {
       "provider": "github"
     },

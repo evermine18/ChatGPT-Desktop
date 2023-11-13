@@ -1,7 +1,6 @@
 const { app, BrowserWindow, Menu, MenuItem, clipboard,
      nativeImage, ipcMain, dialog, shell } = require('electron')
 const { autoUpdater } = require('electron-updater');
-const fs = require('fs');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
 
@@ -21,8 +20,6 @@ app.on('ready', () => {
           }
     });
 
-    const EXTENSION_PATH = path.join(__dirname,'content.js');
-    const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
 
     ipcMain.on('minimize-window', () => {
         win.minimize();
@@ -58,7 +55,7 @@ app.on('ready', () => {
     //win.webContents.openDevTools();
 
     ipcMain.on('close-window', () => {
-    win.close();
+        win.close();
     });
 
     autoUpdater.on('error', (error) => {
@@ -132,8 +129,8 @@ app.on('ready', () => {
         }
         contextMenu.popup(win, params.x, params.y);
       });
-    //win.loadURL(startURL)
-    win.loadFile('index.html');
+
+    win.loadFile('app/index.html');
 });
 
 
