@@ -21,8 +21,22 @@ document.getElementById('fix-gpt4').addEventListener('click', () => {
 document.getElementById('about').addEventListener('click', () => {
   ipcRenderer.send('about-dialog');
 })
-const webview = document.querySelector('webview');
 
+document.addEventListener('keydown', function(event) {
+  if (event.ctrlKey && event.key === 'f') {
+    const div = document.getElementById('find_div');
+    div.style.display = 'flex';
+  }
+});
+
+function searchText() {
+  var search = document.getElementById('searchBox').value;
+  var iframe = document.getElementById('tuIframe');
+  var content = iframe.contentWindow.document.body;
+
+}
+
+const webview = document.querySelector('webview');
 webview.addEventListener('context-menu', (e) => {
   e.preventDefault();
   ipcRenderer.send('context-menu', {

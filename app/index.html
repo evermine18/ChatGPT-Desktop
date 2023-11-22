@@ -1,8 +1,9 @@
 <link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="chatgpt.css">
 <div style="background-color: white; width: 100%; height: 30px; display: flex; ">
     
     <div class="dropdown" style="width: 40px; height: 30px;">
-        <img src="../icon.png" height="22px" style="margin: 5px; margin-bottom: 0px;">
+        <img src="../icon.png" height="22px" width="22px" style="margin: 5px; margin-bottom: 0px;">
         <div class="dropdown-content"> 
             <a href="#" onclick="location.reload(true)">
                 <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.0698 10.8763C3.62354 6.43564 7.4099 3 12.0002 3C14.2826 3 16.403 3.85067 18.0121 5.25439V4C18.0121 3.44772 18.4598 3 19.0121 3C19.5644 3 20.0121 3.44772 20.0121 4V8C20.0121 8.55228 19.5644 9 19.0121 9H15.0121C14.4598 9 14.0121 8.55228 14.0121 8C14.0121 7.44772 14.4598 7 15.0121 7H16.9574C15.6759 5.76379 13.9103 5 12.0002 5C8.43131 5 5.48489 7.67174 5.05443 11.1237C4.98609 11.6718 4.48642 12.0607 3.93838 11.9923C3.39034 11.924 3.00146 11.4243 3.0698 10.8763ZM20.0621 12.0077C20.6101 12.076 20.999 12.5757 20.9306 13.1237C20.3769 17.5644 16.5905 21 12.0002 21C9.72345 21 7.60785 20.1535 6.00022 18.7559V20C6.00022 20.5523 5.55251 21 5.00022 21C4.44794 21 4.00022 20.5523 4.00022 20V16C4.00022 15.4477 4.44794 15 5.00022 15H9.00022C9.55251 15 10.0002 15.4477 10.0002 16C10.0002 16.5523 9.55251 17 9.00022 17H7.04308C8.32456 18.2362 10.0901 19 12.0002 19C15.5691 19 18.5156 16.3283 18.946 12.8763C19.0144 12.3282 19.514 11.9393 20.0621 12.0077Z" fill="currentColor"></path></svg>
@@ -26,6 +27,17 @@
             <div id="close" class="close"></div>
         </div>
     </div>
+</div>
+<div id="find_div" style="display: none; position: absolute; z-index: 10000; right: 10; top: 35;">
+    <div class="overflow-hidden gizmo:[&:has(textarea:focus)]:border-token-border-xheavy gizmo:[&:has(textarea:focus)]:shadow-[0_2px_6px_rgba(0,0,0,.05)] flex flex-col w-full dark:border-gray-900/50 gizmo:dark:border-token-border-heavy flex-grow relative border border-black/10 gizmo:border-token-border-heavy dark:text-white rounded-xl gizmo:rounded-2xl shadow-xs dark:shadow-xs dark:bg-gray-700 bg-white gizmo:dark:bg-gray-800 gizmo:shadow-[0_0_0_2px_rgba(255,255,255,0.95)] gizmo:dark:shadow-[0_0_0_2px_rgba(52,53,65,0.95)]">
+        <input id="find_input" class="m-0 w-full resize-none border-0 bg-transparent py-[10px] pr-10 focus:ring-0 focus-visible:ring-0 dark:bg-transparent md:py-4 md:pr-12 gizmo:md:py-3.5 gizmo:placeholder-black/50 gizmo:dark:placeholder-white/50 pl-1 gizmo:pl-1 md:pl-[26px] gizmo:md:pl-[25px]" type="text" id="searchBox" style="margin-right: 50px;">
+    </div>
+    
+    <button id="find_button" class="absolute p-1 rounded-md md:bottom-3 md:p-2 md:right-3 dark:hover:bg-gray-900 dark:disabled:hover:bg-transparent right-2 gizmo:dark:disabled:bg-white gizmo:disabled:bg-black gizmo:disabled:opacity-10 disabled:text-gray-400 enabled:bg-brand-purple gizmo:enabled:bg-black text-white gizmo:p-0.5 gizmo:border gizmo:border-black gizmo:rounded-lg gizmo:dark:border-white gizmo:dark:bg-white bottom-1.5 transition-colors disabled:opacity-40" onclick="searchText()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-white dark:text-black">
+            <path d="M4 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </button>
 </div>
 <style>
     #mywebview {

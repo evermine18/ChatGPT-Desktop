@@ -41,7 +41,8 @@ app.on('ready', () => {
         app.relaunch();
         app.exit(0);
     });
-
+    // Show de tools
+    win.webContents.openDevTools();
     ipcMain.on('about-dialog', () => {
         const options = {
             type: 'info',
