@@ -1,7 +1,12 @@
 class API{
-    static GET(url) {
+    static GET(url, headers = {}) {
         return new Promise((resolve, reject) => {
-            fetch(url)
+            fetch(url,{
+                headers: {
+                    'content-type': 'application/json',
+                    ...headers
+                }
+            })
             .then(response => {
                 // Asegúrate de que la respuesta es exitosa
                 if (!response.ok) {
