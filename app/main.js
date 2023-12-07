@@ -18,6 +18,10 @@ document.getElementById('fix-gpt4').addEventListener('click', () => {
   ipcRenderer.send('relaunch-app');
 })
 
+document.getElementById('devTools').addEventListener('click', () => {
+  ipcRenderer.send('open-dev-tools');
+})
+
 document.getElementById('about').addEventListener('click', () => {
   ipcRenderer.send('about-dialog');
 })
@@ -39,11 +43,9 @@ webview.addEventListener('did-finish-load', () => {
       ipcRenderer.send('load-extension');
   }
 });
-// 
-/*
-Disabled due a no more cap for GPT-4
+
 ipcRenderer.on('execute-script-in-webview', (event, script) => {
   const webview = document.querySelector('webview');
+  webview.openDevTools();
   webview.executeJavaScript(script);
 });
-*/

@@ -3,6 +3,10 @@ const { app, BrowserWindow, Menu, MenuItem, clipboard,
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
+const fs = require('fs');
+
+
+const startURL = 'https://chat.openai.com/';
 
 app.setName('ChatGPT - Client')
 
@@ -20,6 +24,7 @@ app.on('ready', () => {
             webviewTag: true 
           }
     });
+    
     // Top bar frame events
     ipcMain.on('close-window', () => {
         win.close();
@@ -40,6 +45,10 @@ app.on('ready', () => {
     ipcMain.on('relaunch-app', () => {
         app.relaunch();
         app.exit(0);
+    });
+
+    ipcMain.on('open-dev-tools', () => {
+        win.webContents.openDevTools();
     });
 
     ipcMain.on('about-dialog', () => {
@@ -83,9 +92,6 @@ app.on('ready', () => {
 
     autoUpdater.checkForUpdates()
     
-    /*
-    Temporary disabled due no more cap for GPT-4
-
     win.webContents.on('did-finish-load', () => {
         // Checking if the user are in ChatGPT app page
         const currentURL = win.webContents.getURL();
@@ -99,13 +105,13 @@ app.on('ready', () => {
 
     ipcMain.on('load-extension', () => {
 
-        const EXTENSION_PATH = path.join(__dirname, 'content.js');
+        const EXTENSION_PATH = path.join(__dirname, 'app/better-gpt.build.js');
         const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
         setTimeout(() => {
             win.webContents.send('execute-script-in-webview', extensionScript);
         }, 5000);
     });
-    */
+    
 
     win.setMenu(null); // Disabling default menu
 
@@ -136,8 +142,9 @@ app.on('ready', () => {
         }
         contextMenu.popup(win, params.x, params.y);
       });
-
+      
     win.loadFile('app/index.html');
+    
 });
 
 // Quit when all windows are closed.
