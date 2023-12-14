@@ -41,13 +41,22 @@ class Folders {
         
     }
 
+    saveElementReferences(){
+        const chatElements = document.querySelectorAll('li:has(> div a[href*="/c"])');
+        chatElements.forEach(chat => {
+            console.log(chat.getAttribute("href"));
+        });
+    }
+
     async init(){
         this.chat_list = document.querySelector('div.flex.flex-col.gap-2.pb-2.dark\\:text-gray-100.text-gray-800.text-sm > div > span')
         //console.log(localStorage.getItem("accessToken"));
+        this.saveElementReferences();
         this.chat_list.innerHTML = "";
         this.chats = await API.GET('https://chat.openai.com/backend-api/conversations',{Authorization: localStorage.getItem("accessToken")});
         console.log(this.chats);
         this.chat_list.appendChild(await this.createChatListCategory(this.chats.items));
+        
     }
 }
 export default Folders;
