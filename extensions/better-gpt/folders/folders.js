@@ -47,7 +47,13 @@ class Folders {
         chatElements.forEach(chat => {
             const chathref = chat.querySelector('div a').getAttribute("href");
             const chatid = chathref.split("/")[2];
-            this.chats[chatid] = chat;
+            this.chats[chatid] = chat.cloneNode(true);
+            this.chats[chatid].querySelector('div a').setAttribute("href","#");
+            // Adding a event listener to the new chat , and simulating the click on the old one
+            this.chats[chatid].addEventListener('click', () => {
+                chat.querySelector('div a').click();
+            });
+            
         });
         console.log(this.chats);
     }
