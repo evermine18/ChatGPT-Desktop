@@ -61,13 +61,20 @@ class Folders {
     renderChats(){
         const improved_chat_list = document.getElementById("improved-chat-list").querySelector('div');
         const elem = document.createElement("div");
-        elem.innerText = "Category Test 1";
+        elem.innerHTML = '<div style="background-color: #209e00; border-radius: 15px; width: fit-content; padding-inline: 3px;"><a href="#">Next JS</a></div>'
         const ol = document.createElement("ol");
         Object.keys(this.chats).forEach(chat => {
             console.log(this.chats[chat]);
             ol.appendChild(this.chats[chat]);
         })
         elem.appendChild(ol);
+        elem.addEventListener('click', (e) => {
+            if(ol.style.display == "none"){
+                ol.style.display = "block";
+            }else{
+                ol.style.display = "none";
+            }
+        });
         improved_chat_list.appendChild(elem);
     }
 
