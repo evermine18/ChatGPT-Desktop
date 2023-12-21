@@ -62,7 +62,7 @@ class Folders {
     renderChats(){
         const improved_chat_list = document.getElementById("improved-chat-list").querySelector('div');
         let category_list = localStorage.getItem("category_list");
-        category_list = category_list ? JSON.parse(category_list) : {"MUI Lib":{color:"#007fff",chats:["3c420a1b-f1b7-4bdb-a53a-88c1eaf550e2"]}, "Testing tab":{color:"#007fff",chats:["3c4ss2ñl0a1b-f1b7-4bdb-a53a-88c1eaf550e2"]}};
+        category_list = category_list ? JSON.parse(category_list) : {};
         let cat_dict = Object.keys(category_list)
         let chat_list = Object.keys(this.chats);
         for (let i = 0; i <= cat_dict.length; i++) {
@@ -99,16 +99,26 @@ class Folders {
             //Check if the category exists
             let category_list = localStorage.getItem("category_list");
             category_list = category_list ? JSON.parse(category_list) : {};
+            // Cleaning the current chat from any category
+            Object.keys(category_list).forEach(category => {
+                const index = category_list[category].chats.indexOf(this.currentChat);
+                if (index !== -1) {
+                    category_list[category].chats.splice(index, 1);
+                }
+            });
+            // Adding the chat to the new category
             if(e.target.value in category_list){
                 // Add the chat to the category
                 category_list[e.target.value].chats.push(this.currentChat);
-                localStorage.setItem("category_list",JSON.stringify(category_list));
+            }
+            else if(e.target.value == "No Category"){
+
             }
             else{
                 // Create the category
                 category_list[e.target.value] = {color:this.cat_definitions[e.target.value],chats:[this.currentChat]};
-                localStorage.setItem("category_list",JSON.stringify(category_list));
             }
+            localStorage.setItem("category_list",JSON.stringify(category_list));
         });
         topbar.appendChild(select);
         
