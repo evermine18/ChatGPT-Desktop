@@ -5,41 +5,36 @@ class Folders {
     constructor() {
         this.chat_list = undefined;
         this.improved_chat_list = undefined;
+        this.cat_definitions = {"Art":"#a434eb","Code Interpreter":"#f5d002","Research":"#3c45a6", "Testing":"#f59002","Utilities":"#179104", "No Category":"#FFFFFF"};
+        this.currentChat = undefined;
         this.chats = {};
         this.init();
     }
 
-    createChatListCategory(chats){
-        return new Promise((resolve, reject) => {
-            const list = document.createElement('ol');
-            chats.forEach(chat => {
-                const chatItem = document.createElement('li');
-                chatItem.className = "relative z-[15]";
-                chatItem.style.opacity = "1";
-                chatItem.style.height = "auto";
-                chatItem.style.transform = "none";
-                chatItem.style.transformOrigin = "50% 50% 0px";
-                chatItem.setAttribute("data-projection-id","11");
-                //DIV
-                const cont_div = document.createElement('div');
-                cont_div.className =  "group relative active:opacity-90";
-                //a
-                const cont_a = document.createElement('a');
-                cont_a.className = "flex items-center gap-2 rounded-lg p-2 hover:bg-token-surface-primary";
-                cont_a.href = `/c/${chat.id}`;
-                // title div
-                const title_div = document.createElement('div');
-                title_div.className = "relative grow overflow-hidden whitespace-nowrap";
-                title_div.textContent = chat.title;
-                //Appending all items
-                cont_a.appendChild(title_div);
-                cont_div.appendChild(cont_a);
-                chatItem.appendChild(cont_div);
-                list.appendChild(chatItem);
-            });
-            resolve(list);
+    createChatListCategory(category_name, color, chat_list){
+        const elem = document.createElement("div");
+        let empty = true;
+        elem.innerHTML = `<div style="background-color: ${color}; border-radius: 15px; width: fit-content; padding-inline: 3px;"><a href="#">${category_name}</a></div>`
+        const ol = document.createElement("ol");
+        Object.keys(this.chats).forEach(chat => {
+            if(chat_list.includes(chat)){
+                ol.appendChild(this.chats[chat]);
+                empty = false;
+            }
+            
+        })
+        console.log(empty);
+        if(empty) return null;
+        elem.appendChild(ol);
+        elem.querySelector("a").addEventListener('click', (e) => {
+            e.stopPropagation();
+            if(ol.style.display == "none"){
+                ol.style.display = "block";
+            }else{
+                ol.style.display = "none";
+            }
         });
-        
+        return elem
     }
 
     saveElementReferences(){
@@ -51,7 +46,13 @@ class Folders {
             this.chats[chatid].querySelector('div a').setAttribute("href","#");
             // Adding a event listener to the new chat , and simulating the click on the old one
             this.chats[chatid].addEventListener('click', () => {
+                this.currentChat = chatid;
                 chat.querySelector('div a').click();
+                // Reloading the extension with init method, in 5 seconds
+                setTimeout(() => {
+                    this.improved_chat_list.remove();
+                    this.init();
+                }, 5000);
             });
             
         });
@@ -60,22 +61,57 @@ class Folders {
 
     renderChats(){
         const improved_chat_list = document.getElementById("improved-chat-list").querySelector('div');
-        const elem = document.createElement("div");
-        elem.innerHTML = '<div style="background-color: #209e00; border-radius: 15px; width: fit-content; padding-inline: 3px;"><a href="#">Next JS</a></div>'
-        const ol = document.createElement("ol");
-        Object.keys(this.chats).forEach(chat => {
-            console.log(this.chats[chat]);
-            ol.appendChild(this.chats[chat]);
-        })
-        elem.appendChild(ol);
-        elem.addEventListener('click', (e) => {
-            if(ol.style.display == "none"){
-                ol.style.display = "block";
+        let category_list = localStorage.getItem("category_list");
+        category_list = category_list ? JSON.parse(category_list) : {"MUI Lib":{color:"#007fff",chats:["3c420a1b-f1b7-4bdb-a53a-88c1eaf550e2"]}, "Testing tab":{color:"#007fff",chats:["3c4ss2ñl0a1b-f1b7-4bdb-a53a-88c1eaf550e2"]}};
+        let cat_dict = Object.keys(category_list)
+        let chat_list = Object.keys(this.chats);
+        for (let i = 0; i <= cat_dict.length; i++) {
+            let elem
+            if(i !== cat_dict.length){
+                elem = this.createChatListCategory(cat_dict[i],category_list[cat_dict[i]].color,category_list[cat_dict[i]].chats)
+                chat_list = chat_list.filter(chat => !category_list[cat_dict[i]].chats.includes(chat));
             }else{
-                ol.style.display = "none";
+                elem = this.createChatListCategory("No Category","#FFFFFF",chat_list);
+            }
+            console.log(elem);
+            if(elem !== null){
+                improved_chat_list.appendChild(elem);
+            }else{
+                category_list[cat_dict[i]].chats=[]
+            }
+        }
+    }
+
+    addCategorySelect(){
+        const topbar = document.querySelector("div.sticky.top-0.mb-1\\.5.flex.items-center.justify-between.z-10.h-14.bg-white.p-2.font-semibold.dark\\:bg-gray-800");
+        const select = document.createElement("select");
+        select.classList=("flex gap-2 pr-1");
+        // Adding the options#007fff
+
+        Object.keys(this.cat_definitions).forEach(category => {
+            const option = document.createElement("option");
+            option.value = category;
+            option.innerHTML = category;
+            select.appendChild(option);
+        });
+        select.addEventListener('change', (e) => {
+            e.target.value
+            //Check if the category exists
+            let category_list = localStorage.getItem("category_list");
+            category_list = category_list ? JSON.parse(category_list) : {};
+            if(e.target.value in category_list){
+                // Add the chat to the category
+                category_list[e.target.value].chats.push(this.currentChat);
+                localStorage.setItem("category_list",JSON.stringify(category_list));
+            }
+            else{
+                // Create the category
+                category_list[e.target.value] = {color:this.cat_definitions[e.target.value],chats:[this.currentChat]};
+                localStorage.setItem("category_list",JSON.stringify(category_list));
             }
         });
-        improved_chat_list.appendChild(elem);
+        topbar.appendChild(select);
+        
     }
 
     async init(){
@@ -92,6 +128,7 @@ class Folders {
         //this.chats = await API.GET('https://chat.openai.com/backend-api/conversations',{Authorization: localStorage.getItem("accessToken")});
         console.log(this.chats);
         this.renderChats();
+        this.addCategorySelect();
         //this.chat_list.appendChild(await this.createChatListCategory(this.chats.items));
         
     }
