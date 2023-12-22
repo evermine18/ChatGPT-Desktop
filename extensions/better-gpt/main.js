@@ -6,4 +6,8 @@ async function init() {
     localStorage.setItem("accessToken", response.accessToken);
 }
 init();
-const folders = new Folders();
+
+const experimentalFeatures = localStorage.getItem("experimentalFeatures");
+if (experimentalFeatures && experimentalFeatures === "true") {
+    const folders = new Folders();
+}
