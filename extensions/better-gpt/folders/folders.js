@@ -8,14 +8,16 @@ class Folders {
         this.cat_definitions = {"Art":"#a434eb","Code Interpreter":"#f5d002","Research":"#3c45a6", "Testing":"#f59002","Utilities":"#179104", "No Category":"#FFFFFF"};
         this.currentChat = undefined;
         this.chats = {};
+        this.loadingCategories = false;
         this.init();
     }
 
-    createChatListCategory(category_name, color, chat_list){
+    createChatListCategory(category_name, color, chat_list, isOpen = true){
         const elem = document.createElement("div");
         let empty = true;
         elem.innerHTML = `<div style="background-color: ${color}; border-radius: 15px; width: fit-content; padding-inline: 3px;"><a href="#">${category_name}</a></div>`
         const ol = document.createElement("ol");
+        ol.style.display = isOpen ? "block" : "none";
         Object.keys(this.chats).forEach(chat => {
             if(chat_list.includes(chat)){
                 ol.appendChild(this.chats[chat]);
@@ -28,11 +30,15 @@ class Folders {
         elem.appendChild(ol);
         elem.querySelector("a").addEventListener('click', (e) => {
             e.stopPropagation();
+            let category_list = JSON.parse(localStorage.getItem("category_list"));
             if(ol.style.display == "none"){
+                category_list[category_name].open = true;
                 ol.style.display = "block";
             }else{
+                category_list[category_name].open = false;
                 ol.style.display = "none";
             }
+            localStorage.setItem("category_list",JSON.stringify(category_list));
         });
         return elem
     }
@@ -46,13 +52,21 @@ class Folders {
             this.chats[chatid].querySelector('div a').setAttribute("href","#");
             // Adding a event listener to the new chat , and simulating the click on the old one
             this.chats[chatid].addEventListener('click', () => {
+                // Checking if the chat is already loading or if the chat is the current one
+                if(this.loadingCategories || this.currentChat == chatid) return;
+                this.loadingCategories = true;
                 this.currentChat = chatid;
                 chat.querySelector('div a').click();
                 // Reloading the extension with init method, in 5 seconds
-                setTimeout(() => {
-                    this.improved_chat_list.remove();
-                    this.init();
-                }, 5000);
+                var reload_chats = setInterval(() => {
+                    var elemento = document.querySelector("div.sticky.top-0.mb-1\\.5.flex.items-center.justify-between.z-10.h-14.bg-white.p-2.font-semibold.dark\\:bg-gray-800 > div.flex.gap-2.pr-1")
+                    if (elemento) {
+                        this.improved_chat_list.remove();
+                        this.init();
+                        this.loadingCategories = false;
+                        clearInterval(reload_chats); // Clear the interval
+                    }
+                }, 200);
             });
             
         });
@@ -68,7 +82,8 @@ class Folders {
         for (let i = 0; i <= cat_dict.length; i++) {
             let elem
             if(i !== cat_dict.length){
-                elem = this.createChatListCategory(cat_dict[i],category_list[cat_dict[i]].color,category_list[cat_dict[i]].chats)
+                const isOpen = category_list[cat_dict[i]].open ? true : false;
+                elem = this.createChatListCategory(cat_dict[i],category_list[cat_dict[i]].color,category_list[cat_dict[i]].chats, isOpen)
                 chat_list = chat_list.filter(chat => !category_list[cat_dict[i]].chats.includes(chat));
             }else{
                 elem = this.createChatListCategory("No Category","#FFFFFF",chat_list);
@@ -94,6 +109,23 @@ class Folders {
             option.innerHTML = category;
             select.appendChild(option);
         });
+
+        // Check current chat category and set the corresponding option in the select
+        const categoryList = localStorage.getItem("category_list");
+        let hasCategory = false;
+        if (categoryList) {
+            const parsedCategoryList = JSON.parse(categoryList);
+            Object.keys(parsedCategoryList).forEach(category => {
+                if (parsedCategoryList[category].chats.includes(this.currentChat)) {
+                    select.value = category;
+                    hasCategory = true;
+                }
+            });
+        }
+        if (!hasCategory) {
+            select.value = "No Category";
+        }
+
         select.addEventListener('change', (e) => {
             e.target.value
             //Check if the category exists
@@ -119,6 +151,13 @@ class Folders {
                 category_list[e.target.value] = {color:this.cat_definitions[e.target.value],chats:[this.currentChat]};
             }
             localStorage.setItem("category_list",JSON.stringify(category_list));
+            // TODO Please, this needs to be temporal
+            this.improved_chat_list.remove();
+            this.improved_chat_list = document.createElement('span');
+            this.improved_chat_list.id = "improved-chat-list";
+            this.improved_chat_list.innerHTML = '<div class="relative mt-5" data-projection-id="7" style="height: auto; opacity: 1;"></div>';
+            this.chat_list.appendChild(this.improved_chat_list);
+            this.renderChats();
         });
         topbar.appendChild(select);
         
