@@ -15,7 +15,7 @@ class Folders {
     createChatListCategory(category_name, color, chat_list, isOpen = true){
         const elem = document.createElement("div");
         let empty = true;
-        elem.innerHTML = `<div style="background-color: ${color}; border-radius: 15px; width: fit-content; padding-inline: 3px;"><a href="#">${category_name}</a></div>`
+        elem.innerHTML = `<div style="background-color: ${color}; margin-bottom:5px; border-radius: 15px; width: fit-content; padding-inline: 3px;"><a href="#">${category_name}</a></div>`
         const ol = document.createElement("ol");
         ol.style.display = isOpen ? "block" : "none";
         Object.keys(this.chats).forEach(chat => {

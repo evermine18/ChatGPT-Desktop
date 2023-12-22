@@ -18,9 +18,9 @@ document.getElementById('fix-gpt4').addEventListener('click', () => {
   ipcRenderer.send('relaunch-app');
 })
 
-document.getElementById('devTools').addEventListener('click', () => {
-  ipcRenderer.send('open-dev-tools');
-})
+// document.getElementById('devTools').addEventListener('click', () => {
+//   ipcRenderer.send('open-dev-tools');
+// })
 
 document.getElementById('about').addEventListener('click', () => {
   ipcRenderer.send('about-dialog');
