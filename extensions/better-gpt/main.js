@@ -1,4 +1,5 @@
 import Folders from "./folders/folders"
+import KeyboardRedo from "./keyboard-redo/redo";
 import API from "./requests";
 
 async function init() {
@@ -11,3 +12,4 @@ const experimentalFeatures = localStorage.getItem("experimentalFeatures");
 if (experimentalFeatures && experimentalFeatures === "true") {
     const folders = new Folders();
 }
+const keyboardRedo = new KeyboardRedo();
