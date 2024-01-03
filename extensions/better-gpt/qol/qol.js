@@ -31,5 +31,20 @@ export default class QOL{
 
     init(){
         this.renderGUI();
+        document.addEventListener("keydown", function(event) {
+            // Ctrl + R
+            if (event.keyCode == 82 && event.ctrlKey) {
+                // Reloading page
+                window.location.reload();
+            }
+        });
+        document.addEventListener("keydown", function(event) {
+            // Ctrl + D
+            if (event.keyCode == 68 && event.ctrlKey) {
+                // Deleting all chats
+                this.removeAllChats();
+            }
+        }.bind(this));
+        
     }
 }
