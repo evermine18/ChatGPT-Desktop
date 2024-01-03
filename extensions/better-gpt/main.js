@@ -1,5 +1,6 @@
 import Folders from "./folders/folders"
 import KeyboardRedo from "./keyboard-redo/redo";
+import QOL from "./qol/qol";
 import API from "./requests";
 
 async function init() {
@@ -13,3 +14,4 @@ if (experimentalFeatures && experimentalFeatures === "true") {
     const folders = new Folders();
 }
 const keyboardRedo = new KeyboardRedo();
+const QoLFunctions = new QOL();
