@@ -58,6 +58,6 @@ webview.addEventListener('did-finish-load', () => {
 
 ipcRenderer.on('execute-script-in-webview', (event, script) => {
   const webview = document.querySelector('webview');
-  //webview.openDevTools();
+  webview.openDevTools();
   webview.executeJavaScript(script);
 });

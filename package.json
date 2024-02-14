@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-client",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A Desktop client made with electron for ChatGPT",
   "main": "index.js",
   "scripts": {

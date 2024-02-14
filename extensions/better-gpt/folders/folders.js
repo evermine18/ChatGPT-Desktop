@@ -98,7 +98,7 @@ class Folders {
     }
 
     addCategorySelect(){
-        const topbar = document.querySelector("div.sticky.top-0.mb-1\\.5.flex.items-center.justify-between.z-10.h-14.bg-white.p-2.font-semibold.dark\\:bg-gray-800");
+        const topbar = document.querySelector("div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div.absolute.left-0.right-0 > div");
         const select = document.createElement("select");
         select.classList=("flex gap-2 pr-1");
         // Adding the options#007fff
@@ -159,12 +159,13 @@ class Folders {
             this.chat_list.appendChild(this.improved_chat_list);
             this.renderChats();
         });
-        topbar.appendChild(select);
-        
+        topbar.appendChild(select); 
+        // #__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div.absolute.left-0.right-0 > div        
     }
 
     async init(){
-        this.chat_list = document.querySelector('div.flex.flex-col.gap-2.pb-2.dark\\:text-gray-100.text-gray-800.text-sm > div')
+        // TODO Do a config/global vars file for the selectors
+        this.chat_list = document.querySelector('div.flex.flex-col.gap-2.pb-2.text-token-text-primary.text-sm > div')
         this.chat_list.children[0].id = "chat-list";
         this.chat_list.children[0].style.display = "none";
         this.improved_chat_list = document.createElement('span');
@@ -179,7 +180,7 @@ class Folders {
         this.renderChats();
         this.addCategorySelect();
         //this.chat_list.appendChild(await this.createChatListCategory(this.chats.items));
-        
+        // #__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.flex-shrink-0.overflow-x-hidden.bg-token-sidebar-surface-primary > div > div > div > div > nav > div.flex-col.flex-1.transition-opacity.duration-500.-mr-2.pr-2.overflow-y-auto > div.flex.flex-col.gap-2.pb-2.text-token-text-primary.text-sm
     }
 }
 export default Folders;
