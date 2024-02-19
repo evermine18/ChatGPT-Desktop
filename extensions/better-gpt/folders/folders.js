@@ -25,7 +25,6 @@ class Folders {
             }
             
         })
-        console.log(empty);
         if(empty) return null;
         elem.appendChild(ol);
         elem.querySelector("a").addEventListener('click', (e) => {
@@ -58,8 +57,10 @@ class Folders {
                 this.currentChat = chatid;
                 chat.querySelector('div a').click();
                 // Reloading the extension with init method, in 5 seconds
+                // TODO This is a temporal solution
                 var reload_chats = setInterval(() => {
-                    var elemento = document.querySelector("div.sticky.top-0.mb-1\\.5.flex.items-center.justify-between.z-10.h-14.bg-white.p-2.font-semibold.dark\\:bg-gray-800 > div.flex.gap-2.pr-1")
+                    var elemento = document.querySelector(".bg-token-main-surface-primary > div.flex");
+                    //? PROBLEM APARENTLY SOLVED
                     if (elemento) {
                         this.improved_chat_list.remove();
                         this.init();
@@ -70,7 +71,6 @@ class Folders {
             });
             
         });
-        console.log(this.chats);
     }
 
     renderChats(){
@@ -88,7 +88,6 @@ class Folders {
             }else{
                 elem = this.createChatListCategory("No Category","#FFFFFF",chat_list);
             }
-            console.log(elem);
             if(elem !== null){
                 improved_chat_list.appendChild(elem);
             }else{
@@ -98,7 +97,8 @@ class Folders {
     }
 
     addCategorySelect(){
-        const topbar = document.querySelector("div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div.absolute.left-0.right-0 > div");
+        const topbar = document.querySelector(".bg-token-main-surface-primary");
+        // #__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col > div.flex-1.overflow-hidden > div > div > div > div.sticky.top-0.mb-1\.5.flex.items-center.justify-between.z-10.h-14.p-2.font-semibold.bg-token-main-surface-primary > div.flex.items-center.gap-2
         const select = document.createElement("select");
         select.classList=("flex gap-2 pr-1");
         // Adding the options#007fff
@@ -172,11 +172,9 @@ class Folders {
         this.improved_chat_list.id = "improved-chat-list";
         this.improved_chat_list.innerHTML = '<div class="relative mt-5" data-projection-id="7" style="height: auto; opacity: 1;"></div>';
         this.chat_list.appendChild(this.improved_chat_list);
-        //console.log(localStorage.getItem("accessToken"));
         this.saveElementReferences();
         //this.chat_list.innerHTML = "";
         //this.chats = await API.GET('https://chat.openai.com/backend-api/conversations',{Authorization: localStorage.getItem("accessToken")});
-        console.log(this.chats);
         this.renderChats();
         this.addCategorySelect();
         //this.chat_list.appendChild(await this.createChatListCategory(this.chats.items));
