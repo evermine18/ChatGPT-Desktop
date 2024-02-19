@@ -29,4 +29,11 @@ function getSystemProperties(){
     return DEFULT_PROPERTIES;
 }
 
-module.exports = getSystemProperties;
+function getMainPage(){
+    if(os.platform() === 'darwin'){
+        return 'app/index_mac.html';
+    }
+    return 'app/index.html';
+}
+
+module.exports = {getSystemProperties, getMainPage};

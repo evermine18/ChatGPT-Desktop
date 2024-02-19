@@ -4,7 +4,7 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
 const fs = require('fs');
-const getSystemProperties = require('./client/client-properties');
+const {getSystemProperties, getMainPage} = require('./client/client-properties');
 
 
 const startURL = 'https://chat.openai.com/';
@@ -135,6 +135,6 @@ app.on('ready', () => {
         contextMenu.popup(win, params.x, params.y);
       });
       
-    win.loadFile('app/index.html');
+    win.loadFile(getMainPage());
     
 });
