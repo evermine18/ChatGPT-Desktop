@@ -98,7 +98,9 @@ app.on('ready', () => {
         const EXTENSION_PATH = path.join(__dirname, 'app/better-gpt.build.js');
         const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
         setTimeout(() => {
-            win.webContents.send('execute-script-in-webview', extensionScript);
+            if (!win.isDestroyed()) {
+                win.webContents.send('execute-script-in-webview', extensionScript);
+            }
         }, 5000);
     });
     
@@ -136,8 +138,3 @@ app.on('ready', () => {
     win.loadFile('app/index.html');
     
 });
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-})
