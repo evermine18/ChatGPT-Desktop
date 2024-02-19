@@ -4,6 +4,7 @@ const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const request = require('request').defaults({ encoding: null });  
 const fs = require('fs');
+const getSystemProperties = require('./client/client-properties');
 
 
 const startURL = 'https://chat.openai.com/';
@@ -12,22 +13,11 @@ app.setName('ChatGPT - Client')
 
 app.on('ready', () => {
     // Initializing window
-    const win = new BrowserWindow({
-        width: 1000,
-        height: 800,
-        frame: false,
-        icon: path.join(__dirname, 'icon.png'),
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            partition: 'persist:myPartition',
-            webviewTag: true 
-          }
-    });
+    const win = new BrowserWindow(getSystemProperties());
     
     // Top bar frame events
     ipcMain.on('close-window', () => {
-        win.close();
+        app.exit();
     });
 
     ipcMain.on('minimize-window', () => {
