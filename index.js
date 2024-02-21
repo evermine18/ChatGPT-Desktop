@@ -5,6 +5,7 @@ const path = require('path');
 const request = require('request').defaults({ encoding: null });  
 const fs = require('fs');
 const {getSystemProperties, getMainPage} = require('./client/client-properties');
+const EventHandlers = require('./client/event-handlers');
 
 
 const startURL = 'https://chat.openai.com/';
@@ -14,49 +15,20 @@ app.setName('ChatGPT - Client')
 app.on('ready', () => {
     // Initializing window
     const win = new BrowserWindow(getSystemProperties());
+    const handlers = new EventHandlers(win);
     
     // Top bar frame events
-    ipcMain.on('close-window', () => {
-        app.exit();
-    });
+    ipcMain.on('close-window', handlers.closeHandler);
 
-    ipcMain.on('minimize-window', () => {
-        win.minimize();
-      });
+    ipcMain.on('minimize-window', handlers.minimizeHandler.bind(handlers));
     
-    ipcMain.on('maximize-window', () => {
-    if (win.isMaximized()) {
-        win.unmaximize();
-    } else {
-        win.maximize();
-    }
-    });
+    ipcMain.on('maximize-window', handlers.maximizeHandler.bind(handlers));
     // Logo contextual menu events
-    ipcMain.on('relaunch-app', () => {
-        app.relaunch();
-        app.exit(0);
-    });
+    ipcMain.on('relaunch-app', handlers.relaunchHandler.bind(handlers));
 
-    ipcMain.on('open-dev-tools', () => {
-        win.webContents.openDevTools();
-    });
+    ipcMain.on('open-dev-tools', handlers.openDevToolsHandler.bind(handlers));
 
-    ipcMain.on('about-dialog', () => {
-        const options = {
-            type: 'info',
-            title: 'About ChatGPT - Client',
-            message: 'ChatGPT Desktop client.',
-            detail: 'An enhanced unofficial desktop client for ChatGPT, made with Electron, featuring a sleek and simplistic design.\n\nMade by: @evermine18\n\nVersion: '+app.getVersion(),
-            buttons: ['Visit Repo', 'Check Projects', 'OK']
-        };
-        dialog.showMessageBox(null, options).then((response) => {
-            if (response.response === 0) { // 'Visit Repo' was clicked
-                shell.openExternal('https://github.com/evermine18/ChatGPT-Desktop');
-            } else if (response.response === 1) { // 'Check Projects' was clicked
-                shell.openExternal('https://github.com/evermine18');
-            }
-        });
-    })    
+    ipcMain.on('about-dialog', handlers.aboutDialogHandler.bind(handlers));    
     // Error updater handling
     autoUpdater.on('error', (error) => {
         dialog.showMessageBox({
@@ -93,16 +65,7 @@ app.on('ready', () => {
         }   
     });
 
-    ipcMain.on('load-extension', () => {
-
-        const EXTENSION_PATH = path.join(__dirname, 'app/better-gpt.build.js');
-        const extensionScript = fs.readFileSync(EXTENSION_PATH, 'utf8');
-        setTimeout(() => {
-            if (!win.isDestroyed()) {
-                win.webContents.send('execute-script-in-webview', extensionScript);
-            }
-        }, 5000);
-    });
+    ipcMain.on('load-extension', handlers.loadExtensionHandler.bind(handlers));
     
 
     win.setMenu(null); // Disabling default menu
