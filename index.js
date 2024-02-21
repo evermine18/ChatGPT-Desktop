@@ -1,11 +1,11 @@
 const { app, BrowserWindow, Menu, MenuItem, clipboard,
      nativeImage, ipcMain, dialog, shell } = require('electron')
 const { autoUpdater } = require('electron-updater');
-const path = require('path');
 const request = require('request').defaults({ encoding: null });  
-const fs = require('fs');
 const {getSystemProperties, getMainPage} = require('./client/client-properties');
+const os = require('os');
 const EventHandlers = require('./client/event-handlers');
+const FrameMenu = require('./client/menu');
 
 
 const startURL = 'https://chat.openai.com/';
@@ -16,7 +16,11 @@ app.on('ready', () => {
     // Initializing window
     const win = new BrowserWindow(getSystemProperties());
     const handlers = new EventHandlers(win);
-    
+    if(os.platform() === 'darwin'){
+        const menu = new FrameMenu(handlers);
+    }else{
+        win.setMenu(null); // Disabling default menu
+    }
     // Top bar frame events
     ipcMain.on('close-window', handlers.closeHandler);
 
@@ -67,8 +71,6 @@ app.on('ready', () => {
 
     ipcMain.on('load-extension', handlers.loadExtensionHandler.bind(handlers));
     
-
-    win.setMenu(null); // Disabling default menu
 
     // Context menu events
     ipcMain.on('context-menu', (e, params) => {

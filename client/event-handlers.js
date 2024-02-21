@@ -50,6 +50,10 @@ class EventHandlers {
         });
     }
 
+    reloadPageHandler() {
+        this.win.reload();
+    }
+
 
     loadExtensionHandler() {
         const executeScript = () => {
